@@ -94,9 +94,9 @@ const icons = {
 // ── Nav items config ───────────────────────────────────────────
 export const navItems = [
   { id: "canava", icon: "C", label: "Create Canva", top: true },
-  { id: "data", icon: icons.database, label: "Data", top: true },
-  { id: "users", icon: icons.user, label: "Users", top: true },
-  { id: "schedule", icon: icons.calendar, label: "Schedule", top: true },
-  { id: "actions", icon: icons.bolt, label: "Actions", top: true },
-  { id: "alerts", icon: icons.bell, label: "Alerts", top: true },
+  // { id: "data", icon: icons.database, label: "Data", top: true },
+  // { id: "users", icon: icons.user, label: "Users", top: true },
+  // { id: "schedule", icon: icons.calendar, label: "Schedule", top: true },
+  // { id: "actions", icon: icons.bolt, label: "Actions", top: true },
+  // { id: "alerts", icon: icons.bell, label: "Alerts", top: true },
 ];
