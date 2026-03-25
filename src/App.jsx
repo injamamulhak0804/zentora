@@ -48,7 +48,9 @@ function App() {
 
   return (
     <>
-      <div className="grid h-screen w-full grid-cols-[72px_minmax(0,1fr)_320px] overflow-hidden">
+      <div
+        className={`grid h-screen w-full ${active === "canava" ? "grid-cols-[72px_minmax(0,1fr)_320px]" : "grid-cols-[72px_minmax(0,1fr)_0px]"} overflow-hidden`}
+      >
         <Sidebar active={active} setActive={setActive} />
 
         {active === "canava" && (
@@ -67,17 +69,13 @@ function App() {
         {active === "settings" && <SettingsPage />}
         {active === "profile" && <ProfilePage />}
 
-        {active === "canava" ? (
-          <RightSideBar
-            color={color}
-            setRectangles={setRectangles}
-            rectangles={rectangles}
-            setColor={setColor}
-            selectedCom={selectedCom}
-          />
-        ) : (
-          <div className="w-full border-l border-border bg-surface" />
-        )}
+        <RightSideBar
+          color={color}
+          setRectangles={setRectangles}
+          rectangles={rectangles}
+          setColor={setColor}
+          selectedCom={selectedCom}
+        />
       </div>
     </>
   );
