@@ -3,6 +3,7 @@ import {
   Layer,
   Line,
   Rect,
+  Text,
   Stage,
   Image as KonvaImage,
   Transformer,
@@ -70,11 +71,184 @@ function GridLayer({
   );
 }
 
+const TextArea = ({ textNode, onClose, onChange, stageRef }) => {
+  const textareaRef = useRef(null);
+
+  useEffect(() => {
+    if (!textareaRef.current || !textNode || !stageRef.current) return;
+
+    const textarea = textareaRef.current;
+    const stage = stageRef.current;
+    const textPosition = textNode.absolutePosition();
+    const stageBox = stage.container().getBoundingClientRect();
+
+    textarea.value = textNode.text();
+    textarea.style.position = "fixed";
+    textarea.style.top = `${stageBox.top + textPosition.y}px`;
+    textarea.style.left = `${stageBox.left + textPosition.x}px`;
+    textarea.style.width = `${textNode.width() - textNode.padding() * 2}px`;
+    textarea.style.height = `${textNode.height() - textNode.padding() * 2 + 5}px`;
+    textarea.style.fontSize = `${textNode.fontSize()}px`;
+    textarea.style.border = "none";
+    textarea.style.padding = "0px";
+    textarea.style.margin = "0px";
+    textarea.style.overflow = "hidden";
+    textarea.style.background = "none";
+    textarea.style.outline = "none";
+    textarea.style.resize = "none";
+    textarea.style.lineHeight = textNode.lineHeight();
+    textarea.style.fontFamily = textNode.fontFamily();
+    textarea.style.transformOrigin = "left top";
+    textarea.style.textAlign = textNode.align();
+    textarea.style.color = textNode.fill().toString() || "#000";
+
+    const rotation = textNode.rotation();
+    textarea.style.transform = rotation ? `rotateZ(${rotation}deg)` : "";
+
+    textarea.style.height = "auto";
+    textarea.style.height = `${textarea.scrollHeight + 3}px`;
+
+    textarea.focus();
+
+    const handleOutsideClick = (e) => {
+      if (e.target !== textarea) {
+        onChange(textarea.value);
+        onClose();
+      }
+    };
+
+    const handleKeyDown = (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        onChange(textarea.value);
+        onClose();
+      }
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+
+    const handleInput = () => {
+      const scale = textNode.getAbsoluteScale().x;
+      textarea.style.width = `${textNode.width() * scale}px`;
+      textarea.style.height = "auto";
+      textarea.style.height = `${textarea.scrollHeight + textNode.fontSize()}px`;
+    };
+
+    textarea.addEventListener("keydown", handleKeyDown);
+    textarea.addEventListener("input", handleInput);
+
+    setTimeout(() => {
+      window.addEventListener("click", handleOutsideClick);
+    }, 0);
+
+    return () => {
+      textarea.removeEventListener("keydown", handleKeyDown);
+      textarea.removeEventListener("input", handleInput);
+      window.removeEventListener("click", handleOutsideClick);
+    };
+  }, [textNode, onChange, onClose, stageRef]);
+
+  return (
+    <textarea
+      ref={textareaRef}
+      style={{
+        minHeight: "1em",
+        position: "fixed",
+        zIndex: 1000,
+      }}
+    />
+  );
+};
+
+const TextEditor = ({ textNode, onClose, onChange, stageRef }) => {
+  if (!textNode) return null;
+  return (
+    <TextArea
+      textNode={textNode}
+      onClose={onClose}
+      onChange={onChange}
+      stageRef={stageRef}
+    />
+  );
+};
+
+const TextItem = ({ shapeProps, isSelected, onSelect, onChange, onEdit, isEditing }) => {
+  const shapeRef = useRef(null);
+  const trRef = useRef(null);
+
+  useEffect(() => {
+    if (!isSelected || !trRef.current || !shapeRef.current) return;
+    trRef.current.nodes([shapeRef.current]);
+    trRef.current.getLayer()?.batchDraw();
+  }, [isSelected]);
+
+  const handleDragEnd = (e) => {
+    onChange({
+      ...shapeProps,
+      x: e.target.x(),
+      y: e.target.y(),
+    });
+  };
+
+  const handleTransformEnd = () => {
+    const node = shapeRef.current;
+    if (!node) return;
+
+    const scaleX = node.scaleX();
+    const newWidth = Math.max(30, node.width() * scaleX);
+
+    node.scaleX(1);
+
+    onChange({
+      ...shapeProps,
+      x: node.x(),
+      y: node.y(),
+      width: newWidth,
+    });
+  };
+
+  return (
+    <>
+      <Text
+        ref={shapeRef}
+        x={shapeProps.x}
+        y={shapeProps.y}
+        text={shapeProps.text}
+        width={shapeProps.width}
+        fontSize={shapeProps.fontSize}
+        fontFamily={shapeProps.fontFamily || "Arial"}
+        fill={shapeProps.fill || shapeProps.color || "#000"}
+        draggable
+        visible={!isEditing}
+        onClick={onSelect}
+        onTap={onSelect}
+        onDblClick={() => onEdit(shapeRef.current)}
+        onDblTap={() => onEdit(shapeRef.current)}
+        onDragEnd={handleDragEnd}
+        onTransformEnd={handleTransformEnd}
+        align={shapeProps.align || "left"}
+        lineHeight={shapeProps.lineHeight || 1.2}
+      />
+      {isSelected && !isEditing && (
+        <Transformer
+          ref={trRef}
+          enabledAnchors={["middle-left", "middle-right"]}
+          boundBoxFunc={(oldBox, newBox) => ({
+            ...newBox,
+            width: Math.max(30, newBox.width),
+          })}
+          rotateEnabled={false}
+        />
+      )}
+    </>
+  );
+};
+
 function CreateCanavaPage({
   color,
   rectangles,
   setRectangles,
-  selectedCom,
   SetSelectedCom,
   checkDeselect,
   selectedId,
@@ -90,6 +264,8 @@ function CreateCanavaPage({
   });
 
   const [newRect, setNewRect] = useState(null);
+  const [editingTextId, setEditingTextId] = useState(null);
+  const [editingTextNode, setEditingTextNode] = useState(null);
 
   useLayoutEffect(() => {
     const observer = new ResizeObserver((entries) => {
@@ -254,12 +430,14 @@ function CreateCanavaPage({
           width={stageSize.width}
           height={stageSize.height}
           onMouseDown={(e) => {
+            if (editingTextId) return;
             checkDeselect(e);
             handlePointerDown(e);
           }}
           onMouseMove={handlePointerMove}
           onMouseUp={handlePointerUp}
           onTouchStart={(e) => {
+            if (editingTextId) return;
             checkDeselect(e);
             handlePointerDown(e);
           }}
@@ -269,9 +447,35 @@ function CreateCanavaPage({
           <GridLayer width={stageSize.width} height={stageSize.height} />
           <Layer>
             {rectangles.map((rect, i) => {
+              if (rect.type === "text") {
+                return (
+                  <TextItem
+                    key={rect.id}
+                    shapeProps={rect}
+                    isSelected={rect.id === selectedId}
+                    isEditing={editingTextId === rect.id}
+                    onSelect={() => {
+                      SetSelectedCom(rect.id);
+                      selectShape(rect.id);
+                    }}
+                    onChange={(newAttrs) => {
+                      const rects = rectangles.slice();
+                      rects[i] = newAttrs;
+                      setRectangles(rects);
+                    }}
+                    onEdit={(node) => {
+                      setEditingTextId(rect.id);
+                      setEditingTextNode(node);
+                      SetSelectedCom(rect.id);
+                      selectShape(rect.id);
+                    }}
+                  />
+                );
+              }
+
               return (
                 <Rectangle
-                  key={i}
+                  key={rect.id}
                   shapeProps={rect}
                   isSelected={rect.id === selectedId}
                   onSelect={() => {
@@ -317,6 +521,24 @@ function CreateCanavaPage({
           </Layer>
         </Stage>
 
+        {editingTextId && editingTextNode && (
+          <TextEditor
+            textNode={editingTextNode}
+            stageRef={stageRef}
+            onChange={(newText) => {
+              setRectangles((prev) =>
+                prev.map((item) =>
+                  item.id === editingTextId ? { ...item, text: newText } : item,
+                ),
+              );
+            }}
+            onClose={() => {
+              setEditingTextId(null);
+              setEditingTextNode(null);
+            }}
+          />
+        )}
+
         {/* Controls */}
         <div className="absolute bottom-10 left-1/2 transform flex -translate-x-1/2 items-center gap-3 rounded-xl border border-slate-200 bg-white/95 p-3 shadow-lg backdrop-blur">
           <input
@@ -332,7 +554,10 @@ function CreateCanavaPage({
           >
             <LuImagePlus size={18} />
           </label>
-          <div className="cursor-pointer rounded-md bg-slate-100 p-2 text-slate-700 transition hover:bg-slate-200">
+          <div
+            className="cursor-pointer rounded-md bg-slate-100 p-2 text-slate-700 transition hover:bg-slate-200"
+            onClick={() => addShape("text", color, setRectangles)}
+          >
             <TfiText size={18} />
           </div>
           <div
@@ -352,7 +577,7 @@ function CreateCanavaPage({
             onClick={() => addShape("triangle", color, setRectangles)}
           >
             {/* <span className="text-sm font-bold leading-none"> */}
-              <IoTriangleOutline />
+            <IoTriangleOutline />
             {/* </span> */}
           </div>
           <div
@@ -360,7 +585,7 @@ function CreateCanavaPage({
             onClick={() => addShape("arrow", color, setRectangles)}
           >
             {/* <span className="text-sm font-bold leading-none"> */}
-              <GoArrowUpRight />
+            <GoArrowUpRight />
             {/* </span> */}
           </div>
         </div>
