@@ -35,20 +35,58 @@ export const addShape = (type, color, setRectangles) => {
   if (type === "rect") {
     setRectangles((prev) => [
       ...prev,
-      { ...base, width: 120, height: 90, cornerRadius: 0 },
+      { ...base, width: 120, height: 90, cornerRadius: 0, type: "rect" },
     ]);
     return;
   }
 
   if (type === "square") {
-    setRectangles((prev) => [...prev, { ...base, width: 100, height: 100 }]);
+    setRectangles((prev) => [
+      ...prev,
+      { ...base, width: 100, height: 100, type: "square" },
+    ]);
     return;
   }
 
   if (type === "pill") {
     setRectangles((prev) => [
       ...prev,
-      { ...base, width: 140, height: 56, cornerRadius: 9999 },
+      {
+        ...base,
+        width: 140,
+        height: 56,
+        cornerRadius: 9999,
+        type: "pill",
+      },
+    ]);
+    return;
+  }
+
+  if (type === "triangle") {
+    setRectangles((prev) => [
+      ...prev,
+      {
+        ...base,
+        width: 130,
+        height: 100,
+        type: "triangle",
+      },
+    ]);
+    return;
+  }
+
+  if (type === "arrow") {
+    setRectangles((prev) => [
+      ...prev,
+      {
+        ...base,
+        width: 160,
+        height: 60,
+        type: "arrow",
+        // Arrow shaft uses stroke; give it a default stroke width so it's visible.
+        stroke: color,
+        strokeWidth: 4,
+      },
     ]);
   }
 };
