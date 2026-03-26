@@ -4,6 +4,7 @@ import CreateCanavaPage from "./pages/createCanava/CreateCanavaPage";
 import RightSideBar from "./component/ui/RightSideBar";
 import SettingsPage from "./pages/settings/SettingsPage";
 import ProfilePage from "./pages/profile/ProfilePage";
+import MobileWarningPopup from "./component/ui/MobileWarningPopup";
 
 function App() {
   const [active, setActive] = useState("canava");
@@ -51,6 +52,7 @@ function App() {
 
   return (
     <>
+      <MobileWarningPopup />
       <div
         className={`grid h-screen w-full ${active === "canava" ? "grid-cols-[72px_minmax(0,1fr)_200px] md:grid-cols-[72px_minmax(0,1fr)_320px]" : "grid-cols-[72px_minmax(0,1fr)_0px]"} overflow-hidden`}
       >
