@@ -32,10 +32,9 @@ export function Logo() {
     <div className="relative group flex items-center justify-center">
       <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-400 to-brand-700 flex items-center justify-center shadow-md shadow-brand-500/30 cursor-pointer">
         <span className="text-white font-sans font-bold text-lg leading-none select-none">
-          S
+          z
         </span>
       </div>
-      {/* <Tooltip label="CanvaToCode" /> */}
     </div>
   );
 }

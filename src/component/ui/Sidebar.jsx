@@ -7,7 +7,8 @@ export default function Sidebar({ active, setActive }) {
     <aside className="flex h-screen w-full flex-col items-center gap-1 border-r border-border bg-surface py-8 shadow-panel">
       {/* Logo */}
       <div className="mb-3">
-        <Logo />
+        {/* <Logo />  */}
+        <img src="./logo.png" alt="Logo" className="w-[40px] h-[40px]" />
       </div>
 
       <Divider />
