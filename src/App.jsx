@@ -12,6 +12,7 @@ function App() {
   const stageRef = useRef(null);
 
   const [rectangles, setRectangles] = useState([]);
+  const [images, setImages] = useState([]);
   const [selectedId, selectShape] = useState(null);
 
   const checkDeselect = (e) => {
@@ -36,7 +37,10 @@ function App() {
       if (isTyping) return;
 
       e.preventDefault();
-      setRectangles((prev) => prev.filter((item) => item.id !== selectedCom));
+      setRectangles((prev) =>
+        prev.filter((item) => item.id !== selectedCom),
+      );
+      setImages((prev) => prev.filter((item) => item.id !== selectedCom));
       SetSelectedCom(null);
       selectShape(null);
     };
@@ -65,6 +69,8 @@ function App() {
             selectShape={selectShape}
             selectedId={selectedId}
             stageRef={stageRef}
+            setImages={setImages}
+            images={images}
           />
         )}
 
@@ -75,6 +81,8 @@ function App() {
           color={color}
           setRectangles={setRectangles}
           rectangles={rectangles}
+          images={images}
+          setImages={setImages}
           setColor={setColor}
           selectedCom={selectedCom}
           stageRef={stageRef}
