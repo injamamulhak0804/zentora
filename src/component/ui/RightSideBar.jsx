@@ -263,24 +263,23 @@ function RightSideBar({
             </div>
           </PanelSection>
 
-          {/* <PanelSection title="Text">
-            <label className="mb-1 block text-xs text-text-secondary">
-              Size
-            </label>
+          <PanelSection title="Text">
+            <label className="mb-1 block text-xs text-text-secondary">Text</label>
             <input
-              type="range"
-              min={8}
-              max={96}
-              value={textSize}
-              onChange={(e) => setTextSize(Number(e.target.value))}
-              className="w-full accent-(--color-accent)"
+              type="text"
+              value={selectedRect?.text || ""}
+              onChange={(e) =>
+                selectedRect && updateSelectedShape({ text: e.target.value })
+              }
+              disabled={!selectedRect || selectedRect.type !== "text"}
+              placeholder={
+                selectedRect && selectedRect.type === "text"
+                  ? "Edit text"
+                  : "Select text shape"
+              }
+              className="h-8 w-full rounded-md border border-border bg-subtle px-2 text-sm outline-none focus:border-border-focus disabled:cursor-not-allowed disabled:opacity-60"
             />
-            <div className="mt-1 flex justify-between text-xs text-text-tertiary">
-              <span>8</span>
-              <span>{textSize}px</span>
-              <span>96</span>
-            </div>
-          </PanelSection> */}
+          </PanelSection>
 
           <PanelSection title="Quick Shapes">
             <div className="grid grid-cols-3 gap-2">
