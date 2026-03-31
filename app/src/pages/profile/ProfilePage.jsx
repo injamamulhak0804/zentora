@@ -1,7 +1,11 @@
+import { useState } from "react";
 import { InfoItem } from "../../component/Profile/InfoItem";
 import { Section } from "../../component/Profile/Section";
+import Portal from "../../component/shared/Portal";
 
-function ProfilePage() {
+function ProfilePage({data= "Sign out"}) {
+   const [open, setOpen] = useState(false);
+
   return (
     <section className="h-full w-full overflow-auto bg-[#f5f5f5] p-6">
       <div className="mx-auto max-w-3xl space-y-4">
@@ -45,17 +49,39 @@ function ProfilePage() {
           </div>
         </Section>
 
-        <Section title="Session">
+        <Section title="Account Status">
           <div className="flex items-center justify-between gap-3 rounded-md border border-border-subtle bg-panel px-3 py-3">
             <p className="text-sm text-text-secondary">
-              Signed in on Windows - Chrome. Last active 2 minutes ago.
+              {data ? "You are currently signed in." : "You are not signed in."}
             </p>
-            <button className="h-9 rounded-md bg-red-600 px-4 text-sm font-semibold text-white transition-colors hover:bg-red-700">
-              Logout
+            <button onClick={() => setOpen(true)} className="h-9 rounded-md bg-red-600 px-4 text-sm font-semibold text-white transition-colors hover:bg-red-700">
+              {data ? "Sign Out" : "Sign In"}
             </button>
           </div>
         </Section>
       </div>
+
+
+
+
+      <div className="p-10">
+      <button
+        onClick={() => setOpen(true)}
+        className="px-4 py-2 bg-blue-500 text-white rounded"
+      >
+        Open Portal
+      </button>
+
+      <Portal
+        isOpen={open}
+        isOverlay
+        overlayColor="rgba(255,0,0,0.3)"
+        CloseBtn={true}
+        onClose={() => setOpen(false)}
+      >
+        <div className="text-lg font-semibold">Hello from Portal 🚀</div>
+      </Portal>
+    </div>
     </section>
   );
 }
