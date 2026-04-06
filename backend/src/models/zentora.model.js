@@ -28,6 +28,21 @@ const userSchema = new mongoose.Schema(
         message: "Invalid email format",
       },
     },
+
+    password: {
+      type: String,
+      required: [true, "Password is required"],
+      minlength: [6, "Password must be at least 6 characters"],
+      validate: {
+        validator: function (value) {
+          return /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/.test(
+            value,
+          );
+        },
+        message:
+          "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character, and be at least 6 characters long",
+      },
+    },
   },
   {
     timestamps: true,
