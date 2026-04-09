@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 
@@ -16,6 +16,23 @@ const Auth = () => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  useEffect(() => {
+    const checkLogged = async () => {
+      try {
+        const res = await fetch("http://localhost:8000/api/v1/verify", {
+          credentials: "include",
+        });
+        if (res.ok) {
+          // If the cookie is valid, redirect away from the login page
+          navigate("/");
+        }
+      } catch (error) {
+        console.log("Not logged in");
+      }
+    };
+    checkLogged();
+  }, [navigate]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -23,11 +40,15 @@ const Auth = () => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
     try {
-      const response = await fetch("http://localhost:8000/api/v1/user/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
-      });
+      const response = await fetch(
+        backendUrl + `/api/v1/user/${isSignup ? "signup" : "signin"}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify(form),
+        },
+      );
 
       const data = await response.json();
 
