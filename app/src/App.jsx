@@ -55,13 +55,18 @@ function App() {
     };
   }, [selectedCom]);
 
-  window.addEventListener("keydown", function (event) {
-    // Check for Ctrl+S or Cmd+S (Mac)
-    if ((event.ctrlKey || event.metaKey) && event.key === "s") {
-      event.preventDefault(); // Stop the browser from trying to save the HTML page
-      saveCanvasData({ reactangle: rectangles, images, color });
-    }
-  });
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if ((event.ctrlKey || event.metaKey) && event.key === "s") {
+        event.preventDefault();
+        saveCanvasData({ reactangle: rectangles, images, color });
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [rectangles, images, color]);
 
   return (
     <>
