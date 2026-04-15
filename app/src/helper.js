@@ -141,10 +141,7 @@ export async function downloadPDF(stageRef, options = {}) {
 }
 
 export async function saveCanvasData({ reactangle, images, color }) {
-  const canvasData = {
-    elements: [reactangle, images, color], // Replace with your actual design state/JSON
-    lastUpdated: new Date().toISOString(),
-  };
+  const canvasData = { reactangle, images, color };
 
   try {
     const response = await fetch(
