@@ -154,7 +154,9 @@ export async function saveCanvasData({ reactangle, images, color }) {
         // CRITICAL: This allows the browser to send the cookie automatically
         credentials: "include",
         body: JSON.stringify({
-          canvasData,
+          rectangles: reactangle,
+          images,
+          color,
         }),
       },
     );
