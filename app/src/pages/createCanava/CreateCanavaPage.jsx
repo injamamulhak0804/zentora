@@ -173,7 +173,14 @@ const TextEditor = ({ textNode, onClose, onChange, stageRef }) => {
   );
 };
 
-const TextItem = ({ shapeProps, isSelected, onSelect, onChange, onEdit, isEditing }) => {
+const TextItem = ({
+  shapeProps,
+  isSelected,
+  onSelect,
+  onChange,
+  onEdit,
+  isEditing,
+}) => {
   const shapeRef = useRef(null);
   const trRef = useRef(null);
 
@@ -446,7 +453,7 @@ function CreateCanavaPage({
         >
           <GridLayer width={stageSize.width} height={stageSize.height} />
           <Layer>
-            {rectangles.map((rect, i) => {
+            {rectangles?.map((rect, i) => {
               if (rect.type === "text") {
                 return (
                   <TextItem
@@ -491,7 +498,7 @@ function CreateCanavaPage({
               );
             })}
 
-            {images.map((image) => (
+            {images?.map((image) => (
               <URLImage
                 key={image.id}
                 image={image}
