@@ -68,6 +68,30 @@ function App() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [rectangles, images, color]);
 
+  useEffect(() => {
+    const getCanvasData = async () => {
+      try {
+        const res = await fetch("http://localhost:8000/api/v1/data", {
+          credentials: "include",
+        });
+
+        if (res.status == 200) {
+          const data = await res.json();
+          const { color, images, rectangles } = data.data;
+          console.log(color, images, rectangles);
+
+          setRectangles(rectangles);
+          setImages(images);
+          setColor(color);
+        }
+      } catch (error) {
+        console.log("error: ", error);
+      }
+    };
+
+    getCanvasData();
+  }, []);
+
   return (
     <>
       <BrowserRouter>
