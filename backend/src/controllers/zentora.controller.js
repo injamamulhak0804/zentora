@@ -98,17 +98,18 @@ export const signOut =
       .send("user Logout Successfully");
   });
 
+// save canva data
 export const saveCanvas = async (req, res) => {
   try {
     const { rectangles, images, color } = req.body;
+    const token = req.cookies.token;
 
-    console.log("recived: ", req.body);
+    if (!token) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
 
-    //first check if canvas exists for the user
-
-    return res
-      .status(200)
-      .json({ success: true, data: "Canvas saved successfully" });
+    const decodedData = jwt.verify(token, process.env.JWT_SECRET);
+    const { userId } = decodedData;
 
     let canvas = await Canvas.findOne({ userId });
 
@@ -134,6 +135,29 @@ export const saveCanvas = async (req, res) => {
     res.json({ success: true, data: canvas });
   } catch (error) {
     console.log("Error saving canvas:", error);
-    res.status(500).json({ message: "Server error" });
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+// get canva data
+export const getCanvas = async (req, res) => {
+  try {
+    const token = req.cookies.token;
+
+    if (!token) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+
+    const decodedData = jwt.verify(token, process.env.JWT_SECRET);
+    const { userId } = decodedData;
+
+    let canvas = await Canvas.findOne({ userId });
+    console.log("canvas: ", canvas);
+
+    return res
+      .status(200)
+      .json({ message: "you got the data: ", data: canvas });
+  } catch (error) {
+    return res.status(500).json({ message: "Server error" });
   }
 };
