@@ -3,6 +3,7 @@ import {
   getZentora,
   createZentora,
   saveCanvas,
+  getCanvas,
 } from "../controllers/zentora.controller.js";
 import { verifyAuth } from "../middleware/auth.js";
 
@@ -19,5 +20,7 @@ router.get("/verify", verifyAuth);
 
 //POST
 router.post("/user/save", saveCanvas);
+
+router.get("/data", getCanvas);
 
 export default router;
