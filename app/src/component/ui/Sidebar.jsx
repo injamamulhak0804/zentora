@@ -2,7 +2,9 @@ import { Avatar, Divider, Logo, Tooltip } from "../shared/helper";
 import { navItems } from "../../constants";
 import { SettingSvg } from "../../assets/Svgs";
 
-export default function Sidebar({ active, setActive }) {
+export default function Sidebar({ active, setActive, userData }) {
+  console.log("userData: ", userData);
+
   return (
     <aside className="flex h-screen w-full flex-col items-center gap-1 border-r border-border bg-surface py-8 shadow-panel">
       {/* Logo */}
@@ -43,7 +45,11 @@ export default function Sidebar({ active, setActive }) {
           </button>
           <Tooltip label="Settings" />
         </div>
-        <Avatar active={active === "profile"} onClick={() => setActive("profile")} />
+        <Avatar
+          active={active === "profile"}
+          onClick={() => setActive("profile")}
+          src={userData?.avatar}
+        />
       </div>
     </aside>
   );
