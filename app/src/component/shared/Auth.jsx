@@ -1,6 +1,7 @@
 import { use, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
+import LoginButton from "./LoginButton";
 
 const Auth = () => {
   const [isSignup, setIsSignup] = useState(false);
@@ -119,13 +120,15 @@ const Auth = () => {
             {isSignup ? "Sign Up" : "Login"}
           </button>
 
-          <button
+          {/* <button
             type="button"
             className="mt-3 w-full rounded-md border-2 border-gray-300 py-2 text-gray-700 hover:bg-gray-50 flex items-center justify-center gap-2"
+            onClick={handleLoginWithGoogle}
           >
             <FcGoogle size={20} />
             Continue with Google
-          </button>
+          </button> */}
+          <LoginButton />
 
           <p className="flex justify-center mt-4 text-sm text-slate-600">
             {isSignup ? "Already have an account?" : "Don't have an account?"}
