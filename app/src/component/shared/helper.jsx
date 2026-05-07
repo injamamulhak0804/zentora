@@ -1,10 +1,10 @@
-// ── Divider 
+// ── Divider
 export function Divider() {
   return <div className="w-6 h-px bg-border-subtle mx-auto" />;
 }
 
 // ── Avatar ─
-export function Avatar({ active = false, onClick }) {
+export function Avatar({ active = false, onClick, src }) {
   return (
     <div className="relative group flex items-center justify-center">
       <button
@@ -15,11 +15,15 @@ export function Avatar({ active = false, onClick }) {
         }`}
       >
         {/* Placeholder avatar — swap src for real image */}
-        <div className="w-full h-full bg-gradient-to-br from-orange-400 to-rose-500 flex items-center justify-center">
-          <span className="text-white font-sans font-semibold text-sm select-none">
-            A
-          </span>
-        </div>
+        {src ? (
+          <img src={src} alt="Avatar" className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-orange-400 to-rose-500 flex items-center justify-center">
+            <span className="text-white font-sans font-semibold text-sm select-none">
+              A
+            </span>
+          </div>
+        )}
       </button>
       {/* <Tooltip label="Profile" /> */}
     </div>
@@ -39,7 +43,7 @@ export function Logo() {
   );
 }
 
-// ── Tooltip 
+// ── Tooltip
 export function Tooltip({ label }) {
   return (
     <div
