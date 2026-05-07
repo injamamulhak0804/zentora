@@ -3,7 +3,6 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import Canvas from "../models/canvas.model.js";
 
-//signin
 const cookieOptions = {
   httpOnly: true, // Prevents JavaScript access (protects against XSS)
   secure: false, // process.env.NODE_ENV === "production", // Ensures cookie is sent over HTTPS only
@@ -11,6 +10,7 @@ const cookieOptions = {
   maxAge: 3600000, // 1 hour in milliseconds
 };
 
+//signin
 export const getZentora = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -90,13 +90,12 @@ export const createZentora = async (req, res) => {
 };
 
 // signout
-export const signOut =
-  ("/logout",
-  (req, res) => {
-    res
-      .cookie("token", null, { expires: new Date() })
-      .send("user Logout Successfully");
-  });
+export const signOut = (req, res) => {
+  res
+    .cookie("token", "", { expires: new Date(), httpOnly: true })
+    .status(200)
+    .json({ message: "Logged out successfully" });
+};
 
 // save canva data
 export const saveCanvas = async (req, res) => {
@@ -160,4 +159,22 @@ export const getCanvas = async (req, res) => {
   } catch (error) {
     return res.status(500).json({ message: "Server error" });
   }
+};
+
+//login with google
+export const getLoginWithGoogle = async (req, res) => {
+  const { access_token } = req.body;
+
+  const googleRes = await fetch(
+    "https://www.googleapis.com/oauth2/v1/userinfo",
+    {
+      headers: {
+        Authorization: `Bearer ${access_token}`,
+      },
+    },
+  );
+
+  const user = await googleRes.json();
+
+  console.log("=========user: ", user);
 };
