@@ -31,7 +31,7 @@ export const getZentora = async (req, res) => {
 
     res.cookie("token", token, cookieOptions);
 
-    res.json({ success: true });
+    res.json({ data: user, success: true });
   } catch (error) {
     res.status(500).json({ message: "Server error" });
   }
@@ -176,5 +176,45 @@ export const getLoginWithGoogle = async (req, res) => {
 
   const user = await googleRes.json();
 
-  console.log("=========user: ", user);
+  // Download and convert profile picture to base64
+  let picture = null;
+  if (user.picture) {
+    try {
+      const imageRes = await fetch(user.picture);
+      const buffer = await imageRes.arrayBuffer();
+      picture = `data:image/jpeg;base64,${Buffer.from(buffer).toString("base64")}`;
+    } catch (error) {
+      console.log("Error downloading profile picture:", error);
+      picture = user.picture; // Fallback to URL if download fails
+    }
+  }
+
+  //If there is an Existing User
+  let existingUser = await User.findOne({ email: user.email });
+
+  if (!existingUser) {
+    existingUser = new User({
+      name: user.name,
+      email: user.email,
+      picture: picture,
+      provider: "google",
+      googleId: user.id,
+    });
+    await existingUser.save();
+  } else {
+    // Update picture on each login
+    existingUser.picture = picture;
+    await existingUser.save();
+  }
+
+  const token = jwt.sign({ _id: existingUser._id }, process.env.JWT_SECRET, {
+    expiresIn: "1h",
+  });
+
+  res.cookie("token", token, cookieOptions);
+  res.status(200).json({
+    success: true,
+    data: existingUser,
+    message: "Logged in with Google successfully",
+  });
 };
