@@ -5,6 +5,8 @@ export function Divider() {
 
 // ── Avatar ─
 export function Avatar({ active = false, onClick, src }) {
+  console.log("src: ", src);
+
   return (
     <div className="relative group flex items-center justify-center">
       <button
@@ -16,7 +18,12 @@ export function Avatar({ active = false, onClick, src }) {
       >
         {/* Placeholder avatar — swap src for real image */}
         {src ? (
-          <img src={src} alt="Avatar" className="w-full h-full object-cover" />
+          <img
+            src={src}
+            alt="Avatar"
+            crossOrigin="anonymous"
+            className="w-full h-full object-cover"
+          />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-orange-400 to-rose-500 flex items-center justify-center">
             <span className="text-white font-sans font-semibold text-sm select-none">
