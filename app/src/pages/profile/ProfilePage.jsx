@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { InfoItem } from "../../component/Profile/InfoItem";
 import { Section } from "../../component/Profile/Section";
@@ -6,7 +6,15 @@ import Portal from "../../component/shared/Portal";
 
 function ProfilePage({ data = "Sign out" }) {
   const [open, setOpen] = useState(false);
+  const [userData, setUserData] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedData = localStorage.getItem("userData");
+    if (storedData) {
+      setUserData(JSON.parse(storedData));
+    }
+  }, []);
 
   const handleSignOut = async () => {
     try {
@@ -19,6 +27,7 @@ function ProfilePage({ data = "Sign out" }) {
       // proceed with local sign-out even if request fails
     } finally {
       localStorage.removeItem("token");
+      localStorage.removeItem("userData");
       navigate("/auth");
     }
   };
@@ -35,10 +44,20 @@ function ProfilePage({ data = "Sign out" }) {
 
         <Section title="User Information">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <InfoItem label="Full Name" value="Arafat Zaman" />
-            <InfoItem label="Email" value="arafat@example.com" />
-            <InfoItem label="Role" value="UI Designer" />
-            <InfoItem label="Timezone" value="Asia/Dhaka (UTC+6)" />
+            <InfoItem
+              label="Full Name"
+              value={userData?.name || "Not provided"}
+            />
+            <InfoItem label="Email" value={userData?.email || "Not provided"} />
+            <InfoItem label="Role" value={userData?.role || "Not specified"} />
+            <InfoItem
+              label="Timezone"
+              value={
+                userData?.timezone ||
+                Intl.DateTimeFormat().resolvedOptions().timeZone ||
+                "Not set"
+              }
+            />
           </div>
         </Section>
 
