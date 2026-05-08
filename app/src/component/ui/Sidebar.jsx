@@ -2,15 +2,16 @@ import { Avatar, Divider, Logo, Tooltip } from "../shared/helper";
 import { navItems } from "../../constants";
 import { SettingSvg } from "../../assets/Svgs";
 
-export default function Sidebar({ active, setActive, userData }) {
-  console.log("userData: ", userData);
+export default function Sidebar({ active, setActive }) {
+  const UserData = JSON.parse(localStorage.getItem("userData")) || {};
+  // console.log("UserData: ", UserData);
 
   return (
     <aside className="flex h-screen w-full flex-col items-center gap-1 border-r border-border bg-surface py-8 shadow-panel">
       {/* Logo */}
       <div className="mb-3">
         {/* <Logo />  */}
-        <img src="./logo.png" alt="Logo" className="w-[40px] h-[40px]" />
+        <img src="./logo.png" alt="Logo" className="w-10 h-10" />
       </div>
 
       <Divider />
@@ -48,7 +49,7 @@ export default function Sidebar({ active, setActive, userData }) {
         <Avatar
           active={active === "profile"}
           onClick={() => setActive("profile")}
-          src={userData?.avatar}
+          src={UserData?.picture}
         />
       </div>
     </aside>
