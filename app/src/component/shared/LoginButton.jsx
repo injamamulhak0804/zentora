@@ -27,8 +27,8 @@ function LoginButton({
       console.log("data: ", data);
 
       if (data.success) {
-        localStorage.setItem("token", data.token);
         setUserData(data.data);
+        localStorage.setItem("userData", JSON.stringify(data.data));
         navigate("/");
       } else {
         onError?.(data.message || "Something went wrong");
