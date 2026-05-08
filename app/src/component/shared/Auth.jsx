@@ -123,8 +123,8 @@ const Auth = ({ setUserData }) => {
       const data = await response.json();
 
       if (response.ok) {
-        localStorage.setItem("token", data.token);
-        setUserData(data.user);
+        localStorage.setItem("userData", JSON.stringify(data.data));
+        setUserData(data.data);
         navigate("/");
       } else {
         setError(data.message || "Something went wrong");
