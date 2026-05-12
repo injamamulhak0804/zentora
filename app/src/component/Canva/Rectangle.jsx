@@ -22,7 +22,7 @@ const Rectangle = ({ shapeProps, isSelected, onSelect, onChange }) => {
     ? Math.min(width, height) / 2
     : (shapeProps.cornerRadius ?? 0);
 
-  const handleDragEnd = (e) => {
+  const handleDragMove = (e) => {
     onChange({
       ...shapeProps,
       x: e.target.x(),
@@ -30,13 +30,19 @@ const Rectangle = ({ shapeProps, isSelected, onSelect, onChange }) => {
     });
   };
 
-  const handleTransformEnd = () => {
+  const handleDragEnd = handleDragMove;
+
+  const syncTransform = () => {
     const node = shapeRef.current;
     if (!node) return;
 
     const scaleX = node.scaleX();
     const scaleY = node.scaleY();
 
+    const nextWidth = Math.max(5, shapeProps.width * scaleX);
+    const nextHeight = Math.max(5, shapeProps.height * scaleY);
+
+    // Prevent compounding scale across transform events
     node.scaleX(1);
     node.scaleY(1);
 
@@ -44,9 +50,8 @@ const Rectangle = ({ shapeProps, isSelected, onSelect, onChange }) => {
       ...shapeProps,
       x: node.x(),
       y: node.y(),
-      // Use original width/height from props; scale is applied on top.
-      width: Math.max(5, shapeProps.width * scaleX),
-      height: Math.max(5, shapeProps.height * scaleY),
+      width: nextWidth,
+      height: nextHeight,
     });
   };
 
@@ -66,8 +71,10 @@ const Rectangle = ({ shapeProps, isSelected, onSelect, onChange }) => {
           stroke={stroke}
           strokeWidth={strokeWidth}
           draggable
+          onDragMove={handleDragMove}
           onDragEnd={handleDragEnd}
-          onTransformEnd={handleTransformEnd}
+          onTransform={syncTransform}
+          onTransformEnd={syncTransform}
         />
         {isSelected && (
           <Transformer
@@ -102,8 +109,10 @@ const Rectangle = ({ shapeProps, isSelected, onSelect, onChange }) => {
           stroke={stroke}
           strokeWidth={strokeWidth}
           draggable
+          onDragMove={handleDragMove}
           onDragEnd={handleDragEnd}
-          onTransformEnd={handleTransformEnd}
+          onTransform={syncTransform}
+          onTransformEnd={syncTransform}
         />
         {isSelected && (
           <Transformer
@@ -137,8 +146,10 @@ const Rectangle = ({ shapeProps, isSelected, onSelect, onChange }) => {
         strokeWidth={strokeWidth}
         cornerRadius={cornerRadius}
         draggable
+        onDragMove={handleDragMove}
         onDragEnd={handleDragEnd}
-        onTransformEnd={handleTransformEnd}
+        onTransform={syncTransform}
+        onTransformEnd={syncTransform}
         opacity={opacity}
       />
       {isSelected && (
