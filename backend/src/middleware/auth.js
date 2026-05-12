@@ -3,12 +3,12 @@ import User from "../models/zentora.model.js";
 
 export const verifyAuth = async (req, res) => {
   try {
-    console.log("logged");
+    console.log("logged", req.cookies.token);
 
     const token = req.cookies.token;
 
     if (!token) {
-      return res.status(401).json({ message: "Not authenticated" });
+      return res.status(401).json({ message: "No token is available" });
     }
 
     const decodedData = jwt.verify(token, process.env.JWT_SECRET);
