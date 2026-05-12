@@ -190,7 +190,7 @@ const TextItem = ({
     trRef.current.getLayer()?.batchDraw();
   }, [isSelected]);
 
-  const handleDragEnd = (e) => {
+  const handleDragMove = (e) => {
     onChange({
       ...shapeProps,
       x: e.target.x(),
@@ -198,7 +198,9 @@ const TextItem = ({
     });
   };
 
-  const handleTransformEnd = () => {
+  const handleDragEnd = handleDragMove;
+
+  const syncTextTransform = () => {
     const node = shapeRef.current;
     if (!node) return;
 
@@ -232,8 +234,10 @@ const TextItem = ({
         onTap={onSelect}
         onDblClick={() => onEdit(shapeRef.current)}
         onDblTap={() => onEdit(shapeRef.current)}
+        onDragMove={handleDragMove}
         onDragEnd={handleDragEnd}
-        onTransformEnd={handleTransformEnd}
+        onTransform={syncTextTransform}
+        onTransformEnd={syncTextTransform}
         align={shapeProps.align || "left"}
         lineHeight={shapeProps.lineHeight || 1.2}
       />
@@ -374,6 +378,24 @@ function CreateCanavaPage({
 
     if (!loadedImage) return null;
 
+    const handleImageTransform = () => {
+      const node = shapeRef.current;
+      if (!node) return;
+
+      const scaleX = node.scaleX();
+      const scaleY = node.scaleY();
+
+      node.scaleX(1);
+      node.scaleY(1);
+
+      onChange({
+        x: node.x(),
+        y: node.y(),
+        width: Math.max(5, node.width() * scaleX),
+        height: Math.max(5, node.height() * scaleY),
+      });
+    };
+
     return (
       <>
         <KonvaImage
@@ -386,31 +408,21 @@ function CreateCanavaPage({
           draggable
           onClick={onSelect}
           onTap={onSelect}
+          onDragMove={(e) => {
+            onChange({
+              x: e.target.x(),
+              y: e.target.y(),
+            });
+          }}
           onDragEnd={(e) => {
             onChange({
               x: e.target.x(),
               y: e.target.y(),
             });
           }}
-          onTransformEnd={() => {
-            const node = shapeRef.current;
-            if (!node) return;
-
-            const scaleX = node.scaleX();
-            const scaleY = node.scaleY();
-
-            node.scaleX(1);
-            node.scaleY(1);
-
-            onChange({
-              x: node.x(),
-              y: node.y(),
-              width: Math.max(5, node.width() * scaleX),
-              height: Math.max(5, node.height() * scaleY),
-            });
-          }}
+          onTransform={handleImageTransform}
+          onTransformEnd={handleImageTransform}
         />
-
         {isSelected && (
           <Transformer
             ref={trRef}
@@ -583,17 +595,13 @@ function CreateCanavaPage({
             className="cursor-pointer rounded-md bg-slate-100 p-2 text-slate-700 transition hover:bg-slate-200"
             onClick={() => addShape("triangle", color, setRectangles)}
           >
-            {/* <span className="text-sm font-bold leading-none"> */}
             <IoTriangleOutline />
-            {/* </span> */}
           </div>
           <div
             className="cursor-pointer rounded-md bg-slate-100 p-2 text-slate-700 transition hover:bg-slate-200"
             onClick={() => addShape("arrow", color, setRectangles)}
           >
-            {/* <span className="text-sm font-bold leading-none"> */}
             <GoArrowUpRight />
-            {/* </span> */}
           </div>
         </div>
       </div>
