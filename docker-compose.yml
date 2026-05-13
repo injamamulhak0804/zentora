@@ -1,0 +1,61 @@
+version: "3.8"
+
+services:
+  # 1. Backend Service
+  backend:
+    build: ./backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=mongodb://mongo:27017/zentora
+    env_file:
+      - ./backend/.env
+    depends_on:
+      - mongo
+
+  # 2. Frontend Service
+  app:
+    build: ./app
+    ports:
+      - "3000:5173" # Mapping to the port used by Vite
+    environment:
+      - VITE_BACKEND_URL=http://localhost:8000 # Pointing to the backend
+    depends_on:
+      - backend
+
+  # 3. Database Service (e.g., MongoDB)
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+
+# version: "3.9"
+
+# services:
+#   frontend:
+#     build: ./frontend
+#     ports:
+#       - "80:80"
+#     depends_on:
+#       - backend
+
+#   backend:
+#     build: ./backend
+#     ports:
+#       - "8000:8000" # optional, for direct access during dev
+#     environment:
+#       - DATABASE_URL=postgresql://user:pass@db:5432/mydb
+#     depends_on:
+#       - db
+
+#   db:
+#     image: postgres:16-alpine
+#     environment:
+#       POSTGRES_USER: user
+#       POSTGRES_PASSWORD: pass
+#       POSTGRES_DB: mydb
+#     volumes:
+#       - db-data:/var/lib/postgresql/data
+
+# volumes:
+#   db-data:
