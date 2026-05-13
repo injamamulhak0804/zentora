@@ -17,11 +17,18 @@ connectDB();
 
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:3000",
+      "https://zentora.vercel.app",
+      "https://zentora.zamam.in",
+      "http://127.0.0.1:8000", // Optional, but keep if you test via 127.0.0.1
+    ],
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
-
 //Routes
 app.use("/api/v1", zentoraRoutes);
 
