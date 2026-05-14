@@ -49,8 +49,8 @@ app.use(
   }),
 );
 
-// Crucial: Handle preflight (OPTIONS) requests explicitly if Vercel is being picky
-app.options("*", cors());
+// Use this syntax to catch all routes without crashing the parser
+app.options("/(.*)", cors());
 
 //Routes
 app.use("/api/v1", zentoraRoutes);
@@ -59,6 +59,14 @@ app.get("/", (req, res) => {
   res.send("Please use /api/v1 for endpoints");
 });
 
-app.listen(PORT, () => {
-  console.log("Server running on port", PORT);
-});
+// app.listen(PORT, () => {
+//   console.log("Server running on port", PORT);
+// });
+
+// Keep your app.listen for local development
+// if (process.env.NODE_ENV !== 'production') {
+app.listen(PORT, () => console.log(`Server running on ${PORT}`));
+// }
+
+// CRITICAL: Export the app for Vercel
+module.exports = app;
