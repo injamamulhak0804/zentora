@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoginButton from "./LoginButton";
 
+const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
 const AuthAside = () => {
   return (
     <aside className="hidden md:flex md:w-[44%] flex-col justify-between rounded-l-2xl bg-slate-900 p-8 text-white relative overflow-hidden">
@@ -89,7 +91,7 @@ const Auth = ({ setUserData }) => {
   useEffect(() => {
     const checkLogged = async () => {
       try {
-        const res = await fetch("http://localhost:8000/api/v1/verify", {
+        const res = await fetch(`${backendUrl}/api/v1/verify`, {
           credentials: "include",
         });
         if (res.ok) {
@@ -106,8 +108,6 @@ const Auth = ({ setUserData }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-
-    const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
     try {
       const response = await fetch(

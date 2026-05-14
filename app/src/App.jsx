@@ -69,10 +69,12 @@ function App() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [rectangles, images, color]);
 
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
   useEffect(() => {
     const getCanvasData = async () => {
       try {
-        const res = await fetch("http://localhost:8000/api/v1/data", {
+        const res = await fetch(`${backendUrl}/api/v1/data`, {
           credentials: "include",
         });
 

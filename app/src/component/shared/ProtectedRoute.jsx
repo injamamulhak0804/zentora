@@ -4,11 +4,12 @@ import { useEffect, useState } from "react";
 const ProtectedRoute = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [isAuth, setIsAuth] = useState(false);
+  const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
     const verifyUser = async () => {
       try {
-        const res = await fetch("http://localhost:8000/api/v1/verify", {
+        const res = await fetch(`${backendUrl}/api/v1/verify`, {
           credentials: "include",
         });
 
