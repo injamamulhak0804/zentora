@@ -15,6 +15,24 @@ app.use(cookieParser());
 app.use(express.json());
 connectDB();
 
+// app.use(
+//   cors({
+//     origin: [
+//       "http://localhost:5173",
+//       "http://localhost:3000",
+//       "https://zentora.vercel.app",
+//       "https://zamam-zentora.vercel.app",
+//       "https://zamam-zentora-frontend.vercel.app/",
+//       "https://zamam-zentora-frontend.vercel.app/auth",
+//       "https://zentora.zamam.in",
+//       "http://127.0.0.1:8000", // Optional, but keep if you test via 127.0.0.1
+//     ],
+//     credentials: true,
+//     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//   }),
+// );
+
 app.use(
   cors({
     origin: [
@@ -22,16 +40,18 @@ app.use(
       "http://localhost:3000",
       "https://zentora.vercel.app",
       "https://zamam-zentora.vercel.app",
-      "https://zamam-zentora-frontend.vercel.app/",
-      "https://zamam-zentora-frontend.vercel.app/auth",
-      "https://zentora.zamam.in",
-      "http://127.0.0.1:8000", // Optional, but keep if you test via 127.0.0.1
+      "https://zamam-zentora-frontend.vercel.app", // Removed slash
+      "https://zentora.zamam.in", // Base domain only
     ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
   }),
 );
+
+// Crucial: Handle preflight (OPTIONS) requests explicitly if Vercel is being picky
+app.options("*", cors());
+
 //Routes
 app.use("/api/v1", zentoraRoutes);
 
