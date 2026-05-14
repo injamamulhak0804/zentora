@@ -5,8 +5,8 @@ import Canvas from "../models/canvas.model.js";
 
 const cookieOptions = {
   httpOnly: true, // Prevents JavaScript access (protects against XSS)
-  secure: false, // process.env.NODE_ENV === "production", // Ensures cookie is sent over HTTPS only
-  sameSite: "Lax", // Prevents CSRF attacks
+  secure: true, // process.env.NODE_ENV === "production", // Ensures cookie is sent over HTTPS only
+  sameSite: "none", // Prevents CSRF attacks
   maxAge: 3600000, // 1 hour in milliseconds
 };
 
