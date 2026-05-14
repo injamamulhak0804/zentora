@@ -7,7 +7,7 @@ import cookieParser from "cookie-parser";
 
 dotenv.config();
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 8000;
 
 const app = express();
 app.use(express.json());
@@ -21,6 +21,9 @@ app.use(
       "http://localhost:5173",
       "http://localhost:3000",
       "https://zentora.vercel.app",
+      "https://zamam-zentora.vercel.app",
+      "https://zamam-zentora-frontend.vercel.app/",
+      "https://zamam-zentora-frontend.vercel.app/auth",
       "https://zentora.zamam.in",
       "http://127.0.0.1:8000", // Optional, but keep if you test via 127.0.0.1
     ],
