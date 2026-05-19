@@ -92,7 +92,12 @@ export const createZentora = async (req, res) => {
 // signout
 export const signOut = (req, res) => {
   res
-    .cookie("token", "", { expires: new Date(), httpOnly: true })
+    .clearCookie("token", "", {
+      expires: new Date(),
+      httpOnly: true,
+      sameSite: "none",
+      secure: true,
+    })
     .status(200)
     .json({ message: "Logged out successfully" });
 };
