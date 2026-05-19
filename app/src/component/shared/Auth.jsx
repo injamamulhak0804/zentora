@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoginButton from "./LoginButton";
 
@@ -87,23 +87,6 @@ const Auth = ({ setUserData }) => {
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
-
-  useEffect(() => {
-    const checkLogged = async () => {
-      try {
-        const res = await fetch(`${backendUrl}/api/v1/verify`, {
-          credentials: "include",
-        });
-        if (res.ok) {
-          // If the cookie is valid, redirect away from the login page
-          navigate("/");
-        }
-      } catch (error) {
-        console.log("Not logged in");
-      }
-    };
-    checkLogged();
-  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
