@@ -91,7 +91,7 @@ function ProfilePage({ data = "Sign out" }) {
               {data ? "You are currently signed in." : "You are not signed in."}
             </p>
             <button
-              onClick={data ? handleSignOut : () => navigate("/auth")}
+              // onClick={data ? handleSignOut : () => navigate("/auth")}
               className="h-9 rounded-md bg-red-600 px-4 text-sm font-semibold text-white transition-colors hover:bg-red-700"
             >
               {data ? "Sign Out" : "Sign In"}
