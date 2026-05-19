@@ -7,6 +7,15 @@ function SettingsPage() {
           Manage workspace-level preferences for your UI builder project.
         </p>
 
+        <div className="rounded-lg border border-yellow-300 bg-yellow-50 p-4 shadow-panel">
+          <h2 className="text-sm font-semibold text-yellow-800">⚠ Notice</h2>
+          <p className="mt-1 text-sm text-yellow-700">
+            Backend integration and protected routes have not been added due to
+            a technical issue. These features will be available once the issue
+            is resolved.
+          </p>
+        </div>
+
         <div className="rounded-lg border border-border bg-surface p-4 shadow-panel">
           <h2 className="text-sm font-semibold text-text-primary">General</h2>
           <p className="mt-1 text-sm text-text-secondary">
