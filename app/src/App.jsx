@@ -103,50 +103,50 @@ function App() {
           <Route
             path="/"
             element={
-              <ProtectedRoute>
-                <div
-                  className={`grid h-screen w-full ${active === "canava" ? "grid-cols-[72px_minmax(0,1fr)_200px] md:grid-cols-[72px_minmax(0,1fr)_320px]" : "grid-cols-[72px_minmax(0,1fr)_0px]"} overflow-hidden`}
-                >
-                  <Sidebar
-                    active={active}
-                    userData={userData}
-                    setActive={setActive}
-                  />
+              // <ProtectedRoute>
+              <div
+                className={`grid h-screen w-full ${active === "canava" ? "grid-cols-[72px_minmax(0,1fr)_200px] md:grid-cols-[72px_minmax(0,1fr)_320px]" : "grid-cols-[72px_minmax(0,1fr)_0px]"} overflow-hidden`}
+              >
+                <Sidebar
+                  active={active}
+                  userData={userData}
+                  setActive={setActive}
+                />
 
-                  {active === "canava" && (
-                    <CreateCanavaPage
-                      color={color}
-                      rectangles={rectangles}
-                      setRectangles={setRectangles}
-                      selectedCom={selectedCom}
-                      SetSelectedCom={SetSelectedCom}
-                      checkDeselect={checkDeselect}
-                      selectShape={selectShape}
-                      selectedId={selectedId}
-                      stageRef={stageRef}
-                      setImages={setImages}
-                      images={images}
-                    />
-                  )}
-
-                  {active === "settings" && <SettingsPage />}
-                  {active === "profile" && <ProfilePage />}
-
-                  <RightSideBar
+                {active === "canava" && (
+                  <CreateCanavaPage
                     color={color}
-                    setRectangles={setRectangles}
                     rectangles={rectangles}
-                    images={images}
-                    setImages={setImages}
-                    setColor={setColor}
+                    setRectangles={setRectangles}
                     selectedCom={selectedCom}
+                    SetSelectedCom={SetSelectedCom}
+                    checkDeselect={checkDeselect}
+                    selectShape={selectShape}
+                    selectedId={selectedId}
                     stageRef={stageRef}
+                    setImages={setImages}
+                    images={images}
                   />
-                </div>
-              </ProtectedRoute>
+                )}
+
+                {active === "settings" && <SettingsPage />}
+                {active === "profile" && <ProfilePage />}
+
+                <RightSideBar
+                  color={color}
+                  setRectangles={setRectangles}
+                  rectangles={rectangles}
+                  images={images}
+                  setImages={setImages}
+                  setColor={setColor}
+                  selectedCom={selectedCom}
+                  stageRef={stageRef}
+                />
+              </div>
+              // </ProtectedRoute>
             }
           />
-          <Route path="/auth" element={<Auth setUserData={setUserData} />} />
+          {/* <Route path="/auth" element={<Auth setUserData={setUserData} />} /> */}
         </Routes>
       </BrowserRouter>
     </>
